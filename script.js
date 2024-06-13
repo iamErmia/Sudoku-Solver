@@ -45,11 +45,46 @@ function solveSudoku(){
     }
 }
 
-function isSafe(){}
+function isSafe(sudoku, row, col, num){
+    /*Chejing if num already exists among col and row numbers */
+    for(let x = 0; x < 9; x++){
+        if(sudoku[x][col] === num || sudoku[row][x] === num) return false;
+    }
+
+    /*Checking if the num already exists in it's sub-square */
+    const startRow = row - row%3;
+    const startCol = col - col%3;
+
+    for(let i = 0; i < 3; i++){
+        for(let j = 0; j < 3; j++){
+            if(sudoku[row + i][col + j] === num) return false;
+        }
+    }
+    return true;
+}
 
 function findUnassigned(){}
 
-function mrv(){}
+function mrv(sudoku){
+    let mincount = Infinity;
+    let bestCell = null;
+
+    for(let row = 0; row < 9; row++){
+        for(let col = 0; col < 9; col++){
+            if(sudoku[row][col] === 0){
+                let count = 0;
+                for(let num = 1; num <= 9; num++){
+                    if(isSafe(sudoku, row, col, num)) count++;
+                }
+                if(count < mincount){
+                    mincount = count;
+                    bestCell = [row, col];
+                }
+            }
+        }
+    }
+    return bestCell;
+}
 
 function leastConstrain(){}
 
