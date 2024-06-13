@@ -36,4 +36,38 @@ function displaySudoku(sudoku){
     }
 }
 
-function solveSudoku(){}
+function solveSudoku(){
+    if(cspSolve(sudoku)){
+        displaySudoku(sudoku);
+        document.getElementById('message').textContent = 'Sudoku Solved!';
+    } else {
+        document.getElementById('message').textContent = 'No solution exists';
+    }
+}
+
+function isSafe(){}
+
+function findUnassigned(){}
+
+function mrv(){}
+
+function leastConstrain(){}
+
+function cspSolve(){
+    const cell = mrv(sudoku);
+    if(!cell) return true;/*No more empty cells left*/
+
+    const [row, col] = cell;
+    const values = leastConstrain(sudoku, row, col);
+
+    for (let i = 0; i < values.length; i++){
+        const num = values[i];
+        if(isSafe(sudoku, row, col, num)){
+            sudoku[row][col] = num;
+            if (cspSolve(sudoku)) return true;
+            sudoku[row][col] = 0;
+        }
+    }
+
+    return false;
+}
