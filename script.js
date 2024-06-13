@@ -63,7 +63,14 @@ function isSafe(sudoku, row, col, num){
     return true;
 }
 
-function findUnassigned(){}
+function findUnassigned(sudoku){
+    for(let i = 0; i < 9; i++){
+        for(let j = 0; j < 9; j++){
+            if(sudoku[i][j] === 0) return [i, j];
+        }
+    }
+    return null;
+}
 
 function mrv(sudoku){
     let mincount = Infinity;
@@ -86,7 +93,34 @@ function mrv(sudoku){
     return bestCell;
 }
 
-function leastConstrain(){}
+function leastConstrain(sudoku, row, col){
+    const numConstraints = Array(10).fill(0);
+
+    for(let num = 1; num <= 9; num++){
+        if(isSafe(sudoku, row, col, num)){
+            for(let x = 0; x < 9; x++){
+                if(isSafe(sudoku, x, col, num) && sudoku[x][col] === 0) numConstraints[num]++;
+                if(isSafe(sudoku, row, x, num) && sudoku[row][x] === 0) numConstraints[num]++;
+            }
+        }
+
+        const startRow = row - row%3;
+        const startCol = col - col%3;
+
+        for(let i = 0; i < 3; i++){
+            for(let j = 0; j < 3; j++){
+                if(sudoku[startRow + i][startCol + j] === 0 && isSafe(sudoku, startRow + i, startCol + j, num)) numConstraints[num]++;
+            }
+        }
+    }
+
+    const sortedValues = [];
+    for(let num = 1; num <= 9; num++){
+        if(isSafe(sudoku, row, col, num)) sortedValues.push({num, constraints: numConstraints[num]});
+    }
+    sortedValues.sort((a,b) => a.constraints - b.constraints);
+    return sortedValues.map(item => item.num);
+}
 
 function cspSolve(){
     const cell = mrv(sudoku);
